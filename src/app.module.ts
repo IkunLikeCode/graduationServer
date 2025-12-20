@@ -11,6 +11,8 @@ import { ProductCategoriesModule } from './modules/product_categories/product_ca
 import { ConversationsModule } from './modules/conversations/conversations.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { SmsCodesModule } from './modules/sms_codes/sms_codes.module';
+import { AuthModule } from './modules/auth/auth.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +28,7 @@ import { SmsCodesModule } from './modules/sms_codes/sms_codes.module';
     ConversationsModule,
     MessagesModule,
     SmsCodesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

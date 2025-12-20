@@ -5,6 +5,7 @@ import { HttpExceptionFilter } from './filters/httpExceptionFilter';
 import { AppExceptionFilter } from './filters/appExceptionFi;ter';
 import { FormatDataInterceptor } from './interceptors/formatData.interceptor';
 import { ConfigService } from '@nestjs/config';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const httpAdapterHost = app.get(HttpAdapterHost);
