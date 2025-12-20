@@ -8,7 +8,6 @@ export class Test {
     name: 'name', //字段名
     type: 'varchar',
     length: 255,
-    charset: 'utf8mb4',
   })
   name: string;
 }

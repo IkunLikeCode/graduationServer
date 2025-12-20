@@ -1,6 +1,13 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Test } from 'src/modules/test/entities/test.entity';
+import { Conversation } from 'src/modules/conversations/entities/conversation.entity';
+import { Message } from 'src/modules/messages/entities/message.entity';
+import { ProductDemand } from 'src/modules/product_demands/entities/product_demand.entity';
+import { ProductCategory } from 'src/modules/product_categories/entities/product_category.entity';
+import { User } from 'src/modules/users/entities/user.entity';
+import { ProductSupply } from 'src/modules/product_supplies/entities/product_supply.entity';
+import { SmsCode } from 'src/modules/sms_codes/entities/sms_code.entity';
 export default function InitTypeOrm() {
   return TypeOrmModule.forRootAsync({
     inject: [ConfigService],
@@ -18,7 +25,16 @@ export default function InitTypeOrm() {
         username,
         password,
         database,
-        entities: [Test],
+        entities: [
+          Test,
+          Conversation,
+          Message,
+          ProductDemand,
+          ProductCategory,
+          User,
+          ProductSupply,
+          SmsCode,
+        ],
         synchronize: true,
         charset: 'utf8mb4',
         timezone: 'Z',
