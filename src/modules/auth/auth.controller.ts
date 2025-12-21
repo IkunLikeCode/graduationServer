@@ -40,9 +40,7 @@ export class AuthController {
       return {
         code: HttpStatus.OK,
         message: result.message,
-        data: {
-          success: result.success,
-        },
+        success: result.success,
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -67,15 +65,15 @@ export class AuthController {
     try {
       const result = await this.authService.registerWithEmail(
         registerDto.email,
-        registerDto.password,
         registerDto.code,
+        registerDto.password,
         registerDto.userType,
         registerDto.nickname,
       );
       return {
         code: HttpStatus.CREATED,
         message: '注册成功',
-        data: result,
+        ...result,
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -106,9 +104,7 @@ export class AuthController {
         body.password,
       );
       return {
-        code: HttpStatus.OK,
-        message: '登录成功',
-        data: result,
+        ...result,
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -139,9 +135,7 @@ export class AuthController {
         body.code,
       );
       return {
-        code: HttpStatus.OK,
-        message: '登录成功',
-        data: result,
+        ...result,
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -168,15 +162,13 @@ export class AuthController {
     },
   ) {
     try {
-      const result = await this.authService.resetPassword(
+      await this.authService.resetPassword(
         body.email,
         body.code,
         body.newPassword,
       );
       return {
-        code: HttpStatus.OK,
         message: '重置成功',
-        data: result,
       };
     } catch (error) {
       if (error instanceof BadRequestException) {

@@ -81,20 +81,21 @@ export class ProductDemand {
   expected_price_max: number;
   @Column({
     type: 'date',
-    nullable: false,
+    nullable: true,
     comment: '截止时间',
   })
   deadline: Date;
   @Column({
     type: 'varchar',
     length: 255,
-    nullable: false,
+    nullable: true,
 
     comment: '配送地址',
   })
   deliver_address: string;
   @Column({
     type: 'text',
+    nullable: true,
 
     comment: '需求描述',
   })

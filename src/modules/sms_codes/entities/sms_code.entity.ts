@@ -32,8 +32,8 @@ export class SmsCode {
 
   @Column({
     type: 'enum',
-    enum: ['register', 'reset', 'verify_email'],
-    comment: '验证码类型 (register:注册,reset:重置密码,verify_email:验证邮箱)',
+    enum: ['register', 'login', 'reset', 'verify_email'],
+    comment: '验证码类型 (register:注册,login:登录,reset:重置密码,verify_email:验证邮箱)',
     nullable: false,
   })
   verification_type: string;

@@ -33,7 +33,8 @@ export class EmailVerificationService {
   }> {
     try {
       // 1.验证邮箱格式
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const emailRegex =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (!emailRegex.test(email)) {
         throw new BadRequestException('邮箱格式错误');
       }
@@ -47,10 +48,15 @@ export class EmailVerificationService {
         },
       });
       if (recentCode) {
-        const timeDiff = Date.now() - recentCode.created_at.getTime();
-        if (timeDiff < 60 * 1000) {
-          const waitTime = Math.ceil((60 * 1000 - timeDiff) / 1000);
-          throw new BadRequestException(`请${waitTime}秒后重试`);
+        const elapsedMs = Date.now() - recentCode.created_at.getTime();
+        const safeElapsedMs = Math.max(0, elapsedMs);
+        const remainingMs = Math.max(
+          0,
+          Math.min(60 * 1000, 60 * 1000 - safeElapsedMs),
+        );
+        if (remainingMs > 0) {
+          const secondsLeft = Math.ceil(remainingMs / 1000);
+          throw new BadRequestException(`请${secondsLeft}秒后重试`);
         }
       }
       // 3.业务校验
@@ -141,7 +147,7 @@ export class EmailVerificationService {
   }
 
   /**
-   * 邮箱u验证登录
+   * 邮箱验证登录
    * @param email 接收者邮箱
    * @param code 验证码
    * @returns
@@ -150,8 +156,9 @@ export class EmailVerificationService {
     email: string,
     code: string,
   ): Promise<{
-    success: boolean;
     message: string;
+    token: string;
+    user: User;
   }> {
     // 1.验证验证码
     const isCodeValid = await this.verifyCode(email, code, 'login');
@@ -174,8 +181,9 @@ export class EmailVerificationService {
       userType: user.user_type,
     });
     return {
-      success: true,
       message: '登录成功',
+      token,
+      user,
     };
   }
 

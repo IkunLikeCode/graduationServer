@@ -30,7 +30,6 @@ export class User {
     type: 'varchar',
     length: 255,
     nullable: false, // 密码 不能为空
-    select: false, // 密码 不参与查询
   })
   password: string;
   @Column({
@@ -43,6 +42,7 @@ export class User {
     type: 'varchar',
     length: 100,
     comment: '用户头像',
+    nullable: true,
   })
   avatar: string;
   @Column({
@@ -57,18 +57,21 @@ export class User {
     type: 'varchar',
     length: 50,
     comment: '用户真实姓名',
+    nullable: true,
   })
   real_name: string;
   @Column({
     type: 'varchar',
     length: 100,
     comment: '用户公司名称',
+    nullable: true,
   })
   company: string;
   @Column({
     type: 'varchar',
     length: 255,
     comment: '地址',
+    nullable: true,
   })
   address: string;
   @Column({

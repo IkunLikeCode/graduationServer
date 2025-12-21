@@ -26,7 +26,7 @@ export class ProductCategory {
     type: 'varchar',
     length: 100,
     comment: '图标',
-    
+    nullable: true,
   })
   icon: string;
   @Column({

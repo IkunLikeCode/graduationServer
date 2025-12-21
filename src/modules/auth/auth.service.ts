@@ -54,6 +54,7 @@ export class AuthService {
       code,
       'register',
     );
+
     if (!isValid) {
       throw new UnauthorizedException('验证码错误');
     }
@@ -100,7 +101,7 @@ export class AuthService {
     const user = await this.usersRepository.findOne({
       where: {
         email,
-        status: 1,
+        status: 0,
       },
     });
     if (!user) {
@@ -117,9 +118,11 @@ export class AuthService {
       email: user.email,
       user_type: user.user_type,
     });
+    const { password: _, ...userWithoutPassword } = user;
     return {
-      user,
+      user: userWithoutPassword,
       token,
+      message: '登录成功',
     };
   }
 

@@ -77,24 +77,27 @@ export class ProductSupply {
     type: 'varchar',
     length: 100,
     comment: '产地',
+    nullable: true,
   })
   origin_place: string;
 
   @Column({
     type: 'date',
-    nullable: false,
+    nullable: true,
     comment: '收获时间',
   })
   harvest_time: Date;
 
   @Column({
     type: 'text',
+    nullable: true,
     comment: '描述',
   })
   description: string;
 
   @Column({
     type: 'json',
+    nullable: true,
     comment: '图片',
   })
   images: any;

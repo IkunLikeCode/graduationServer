@@ -21,6 +21,7 @@ export class Conversation {
     type: 'varchar',
     length: 255,
     comment: '关联供应信息',
+    nullable: true,
   })
   supply_id: string;
 
@@ -28,6 +29,7 @@ export class Conversation {
     type: 'varchar',
     length: 255,
     comment: '关联需求信息',
+    nullable: true,
   })
   demand_id: string;
 
@@ -52,12 +54,14 @@ export class Conversation {
   @Column({
     type: 'text',
     comment: '最后一条消息',
+    nullable: true,
   })
   last_message_id: string;
 
   @Column({
     type: 'datetime',
     comment: '最后一条消息时间',
+    nullable: true,
   })
   last_message_time: Date;
 

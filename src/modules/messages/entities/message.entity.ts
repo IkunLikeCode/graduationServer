@@ -65,6 +65,7 @@ export class Message {
   @Column({
     type: 'datetime',
     comment: '读取时间',
+    nullable: true,
   })
   read_time: Date;
 
