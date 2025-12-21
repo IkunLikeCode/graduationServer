@@ -3,7 +3,6 @@ import { ProductDemand } from 'src/modules/product_demands/entities/product_dema
 import { ProductSupply } from 'src/modules/product_supplies/entities/product_supply.entity';
 import {
   Entity,
-  PrimaryColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
@@ -31,22 +30,18 @@ export class User {
     type: 'varchar',
     length: 255,
     nullable: false, // 密码 不能为空
-
     select: false, // 密码 不参与查询
   })
   password: string;
   @Column({
     type: 'varchar',
     length: 100,
-    nullable: false, // 用户名 不能为空
-
     comment: '用户昵称',
   })
   nickname: string;
   @Column({
     type: 'varchar',
     length: 100,
-
     comment: '用户头像',
   })
   avatar: string;
@@ -61,21 +56,18 @@ export class User {
   @Column({
     type: 'varchar',
     length: 50,
-
     comment: '用户真实姓名',
   })
   real_name: string;
   @Column({
     type: 'varchar',
     length: 100,
-
     comment: '用户公司名称',
   })
   company: string;
   @Column({
     type: 'varchar',
     length: 255,
-
     comment: '地址',
   })
   address: string;

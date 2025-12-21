@@ -12,7 +12,7 @@ import { ConversationsModule } from './modules/conversations/conversations.modul
 import { MessagesModule } from './modules/messages/messages.module';
 import { SmsCodesModule } from './modules/sms_codes/sms_codes.module';
 import { AuthModule } from './modules/auth/auth.module';
-
+import { EmailModule } from './modules/email/email.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +29,7 @@ import { AuthModule } from './modules/auth/auth.module';
     MessagesModule,
     SmsCodesModule,
     AuthModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
