@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { EmailVerificationService } from './services/email-verification.service';
@@ -26,10 +31,17 @@ export class AuthService {
     email: string,
     type: 'register' | 'login' | 'reset',
   ) {
-    return await this.emailVerificationService.sendVerificationCode(
-      email,
-      type,
-    );
+    try {
+      return await this.emailVerificationService.sendVerificationCode(
+        email,
+        type,
+      );
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('发送验证码失败');
+    }
   }
 
   /**

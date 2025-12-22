@@ -55,8 +55,7 @@ export class EmailVerificationService {
           Math.min(60 * 1000, 60 * 1000 - safeElapsedMs),
         );
         if (remainingMs > 0) {
-          const secondsLeft = Math.ceil(remainingMs / 1000);
-          throw new BadRequestException(`请${secondsLeft}秒后重试`);
+          throw new BadRequestException(`请${5}分钟后重试`);
         }
       }
       // 3.业务校验
@@ -106,8 +105,7 @@ export class EmailVerificationService {
         message: '验证码邮件发送成功',
       };
     } catch (error) {
-      this.logger.error(`验证码邮件发送失败: ${email}`, error);
-      throw new BadRequestException('验证码邮件发送失败');
+      throw new BadRequestException(error.message);
     }
   }
 
