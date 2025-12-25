@@ -158,31 +158,35 @@ export class EmailVerificationService {
     token: string;
     user: User;
   }> {
-    // 1.验证验证码
-    const isCodeValid = await this.verifyCode(email, code, 'login');
-    if (!isCodeValid) {
-      throw new BadRequestException('验证码错误');
+    try {
+      // 1.验证验证码
+      const isCodeValid = await this.verifyCode(email, code, 'login');
+      if (!isCodeValid) {
+        throw new BadRequestException('验证码错误');
+      }
+      // 2.获取用户
+      const user = await this.usersRepository.findOne({
+        where: {
+          email,
+        },
+      });
+      if (!user) {
+        throw new BadRequestException('用户不存在');
+      }
+      // 3.生成token
+      const token = this.jwtService.sign({
+        sub: user.id,
+        email: user.email,
+        userType: user.user_type,
+      });
+      return {
+        message: '登录成功',
+        token,
+        user,
+      };
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
-    // 2.获取用户
-    const user = await this.usersRepository.findOne({
-      where: {
-        email,
-      },
-    });
-    if (!user) {
-      throw new BadRequestException('用户不存在');
-    }
-    // 3.生成token
-    const token = this.jwtService.sign({
-      sub: user.id,
-      email: user.email,
-      userType: user.user_type,
-    });
-    return {
-      message: '登录成功',
-      token,
-      user,
-    };
   }
 
   /**
@@ -215,6 +219,8 @@ export class EmailVerificationService {
     await this.usersRepository.save(user);
     return true;
   }
+
+  // 密码加密
   hashPassword(password: string) {
     return crypto.createHash('sha256').update(password).digest('hex');
   }

@@ -60,46 +60,50 @@ export class AuthService {
     userType: UserType,
     nickname?: string,
   ) {
-    // 1.验证邮箱验证码
-    const isValid = await this.emailVerificationService.verifyCode(
-      email,
-      code,
-      'register',
-    );
-
-    if (!isValid) {
-      throw new UnauthorizedException('验证码错误');
-    }
-
-    // 2.检查邮箱是否被注册过
-    const existingUser = await this.usersRepository.findOne({
-      where: {
+    try {
+      // 1.验证邮箱验证码
+      const isValid = await this.emailVerificationService.verifyCode(
         email,
-      },
-    });
-    if (existingUser) {
-      throw new UnauthorizedException('邮箱已被注册');
-    }
+        code,
+        'register',
+      );
 
-    // 3.创建用户
-    const user = this.usersRepository.create({
-      email,
-      password: this.hashPassword(password),
-      user_type: userType,
-      nickname: nickname || email.split('@')[0],
-      email_verified: true,
-    });
-    const savedUser = await this.usersRepository.save(user);
-    // 4.生成jwt token
-    const token = this.jwtService.sign({
-      sub: savedUser.id,
-      email: savedUser.email,
-      user_type: savedUser.user_type,
-    });
-    return {
-      user,
-      token,
-    };
+      if (!isValid) {
+        throw new UnauthorizedException('验证码错误');
+      }
+
+      // 2.检查邮箱是否被注册过
+      const existingUser = await this.usersRepository.findOne({
+        where: {
+          email,
+        },
+      });
+      if (existingUser) {
+        throw new UnauthorizedException('邮箱已被注册');
+      }
+
+      // 3.创建用户
+      const user = this.usersRepository.create({
+        email,
+        password: this.hashPassword(password),
+        user_type: userType,
+        nickname: nickname || email.split('@')[0],
+        email_verified: true,
+      });
+      const savedUser = await this.usersRepository.save(user);
+      // 4.生成jwt token
+      const token = this.jwtService.sign({
+        sub: savedUser.id,
+        email: savedUser.email,
+        user_type: savedUser.user_type,
+      });
+      return {
+        user,
+        token,
+      };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   /**
@@ -108,7 +112,11 @@ export class AuthService {
    * @param password 密码
    * @returns
    */
-  async loginWithPassword(email: string, password: string) {
+  async loginWithPassword(
+    email: string,
+    password: string,
+    rememberMe: boolean,
+  ) {
     // 1.检查邮箱是否存在
     const user = await this.usersRepository.findOne({
       where: {
@@ -124,11 +132,17 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('密码错误');
     }
+    // 设置token过期时间 默认为一天
+    let expiresIn = '1d';
+    if (rememberMe) {
+      expiresIn = '7d';
+    }
     //3.生成jwt token
     const token = this.jwtService.sign({
       sub: user.id,
       email: user.email,
       user_type: user.user_type,
+      expiresIn,
     });
     const { password: _, ...userWithoutPassword } = user;
     return {
@@ -145,7 +159,11 @@ export class AuthService {
    * @returns
    */
   async loginWithCode(email: string, code: string) {
-    return await this.emailVerificationService.loginWithCode(email, code);
+    try {
+      return await this.emailVerificationService.loginWithCode(email, code);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   /**
@@ -155,11 +173,15 @@ export class AuthService {
    * @param newPassword 新密码
    */
   async resetPassword(email: string, code: string, newPassword: string) {
-    return await this.emailVerificationService.resetPassword(
-      email,
-      code,
-      newPassword,
-    );
+    try {
+      return await this.emailVerificationService.resetPassword(
+        email,
+        code,
+        newPassword,
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   hashPassword(password: string) {

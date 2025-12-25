@@ -76,10 +76,8 @@ export class AuthController {
         ...result,
       };
     } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException('注册失败');
+      console.log(error);
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -96,12 +94,14 @@ export class AuthController {
     body: {
       email: string;
       password: string;
+      rememberMe: boolean;
     },
   ) {
     try {
       const result = await this.authService.loginWithPassword(
         body.email,
         body.password,
+        body.rememberMe,
       );
       return {
         ...result,
@@ -138,10 +138,7 @@ export class AuthController {
         ...result,
       };
     } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new InternalServerErrorException('登录失败');
+      throw new BadRequestException(error.message);
     }
   }
 
